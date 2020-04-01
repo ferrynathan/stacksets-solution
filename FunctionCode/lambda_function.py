@@ -446,8 +446,11 @@ def create(event, context):
             Parameters=set_parameters,
             Capabilities=set_capabilities,
             Tags=set_tags,
-            AdministrationRoleARN=set_admin_role_arn,
-            ExecutionRoleName=set_exec_role_name
+            PermissionModel='SERVICE_MANAGED',
+            AutoDeployment={
+              'Enabled': True,
+              'RetainStacksOnAccountRemoval': False
+            }
             # ClientRequestToken='string'
         )
         if response['ResponseMetadata']['HTTPStatusCode'] == 200:
