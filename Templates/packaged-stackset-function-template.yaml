@@ -87,10 +87,10 @@ Resources:
       Description: Custom CloudFormation resource for managing Stack Sets
       Code:
         S3Bucket: lambda-stackset-solution
-        S3Key: lambda/e6df2fe71f22d303f8f761da9d3758d5
+        S3Key: lambda/08d508db0c72d7bb84669afaa7bb2c60
       Handler:
         Fn::Sub: ${ModuleName}.handler
-      Runtime: python3.6
+      Runtime: python3.7
       Timeout: 900
       Role:
         Fn::GetAtt:

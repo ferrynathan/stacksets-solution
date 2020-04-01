@@ -416,16 +416,6 @@ def create(event, context):
     else:
         set_capabilities = ''
 
-    if 'AdministrationRoleARN' in event['ResourceProperties']:
-        set_admin_role_arn = event['ResourceProperties']['AdministrationRoleARN']
-    else:
-        set_admin_role_arn = ''
-
-    if 'ExecutionRoleName' in event['ResourceProperties']:
-        set_exec_role_name = event['ResourceProperties']['ExecutionRoleName']
-    else:
-        set_exec_role_name = ''
-
     if 'Parameters' in event['ResourceProperties']:
         set_parameters = expand_parameters(event['ResourceProperties']['Parameters'])
     else:
@@ -446,8 +436,11 @@ def create(event, context):
             Parameters=set_parameters,
             Capabilities=set_capabilities,
             Tags=set_tags,
-            AdministrationRoleARN=set_admin_role_arn,
-            ExecutionRoleName=set_exec_role_name
+            PermissionModel='SERVICE_MANAGED',
+            AutoDeployment={
+              'Enabled': True,
+              'RetainStacksOnAccountRemoval': False
+            }
             # ClientRequestToken='string'
         )
         if response['ResponseMetadata']['HTTPStatusCode'] == 200:

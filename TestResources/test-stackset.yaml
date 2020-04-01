@@ -15,9 +15,9 @@ Resources:
       Parameters:
         - ReadCapacity: 20
         - WriteCapacity: 20
-      Capabilities: [ "CAPABILITY_IAM" ]
-      AdministrationRoleARN: 'arn:aws:iam::335179325365:role/aws-service-role/stacksets.cloudformation.amazonaws.com/AWSServiceRoleForCloudFormationStackSetsOrgAdmin'
-      ExecutionRoleName: 'AWSServiceRoleForCloudFormationStackSetsOrgMember'
+      Capabilities: [ CAPABILITY_NAMED_IAM ]
+      AdministrationRoleARN: 'arn:aws:iam::335179325365:role/AWSCloudFormationStackSetAdministrationRole'
+      ExecutionRoleName: 'AWSCloudFormationStackSetExecutionRole'
       OperationPreferences: {
         "RegionOrder": [ "eu-west-1" ],
         "FailureToleranceCount": 0,
