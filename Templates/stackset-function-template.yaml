@@ -87,7 +87,7 @@ Resources:
       Description: Custom CloudFormation resource for managing Stack Sets
       Code: ../FunctionCode
       Handler: !Sub "${ModuleName}.handler"
-      Runtime: python3.6
+      Runtime: python3.7
       Timeout: 900
       Role: !GetAtt StackSetResourceRole.Arn
 

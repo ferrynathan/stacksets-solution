@@ -1,0 +1,97 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Main FinOps stack
+
+Parameters:
+  S3Bucket:
+    Type: String
+    Description: S3Bucket where the templates are stored
+  Release:
+    Type: String
+    Description: Release name
+
+Resources:
+  StackSetResourceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Tags:
+        - Key: cost:department
+          Value: support
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+        -
+          PolicyName: "IAMPassRolePermissions"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: Allow
+                Action: iam:PassRole
+                Resource: "*"
+        -
+          PolicyName: "CloudFormationPermissions"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: Allow
+                Action: cloudformation:*
+                Resource: "*"
+        -
+          PolicyName: "LambdaPermissions"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: Allow
+                Action: logs:CreateLogGroup
+                Resource:
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*'
+              -
+                Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*'
+        -
+          PolicyName: "S3Permissions"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: Allow
+                Action:
+                - s3:Get*
+                - s3:List*
+                Resource: "*"
+
+  StackSetResourceFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Custom CloudFormation resource for managing Stack Sets
+      Code:
+        S3Bucket: !Sub ${S3Bucket}
+        S3Key: !Sub lambdas/${Release}/stacksets.zip
+      Handler: index.handler
+      Runtime: python3.7
+      Timeout: 900
+      Role: !GetAtt StackSetResourceRole.Arn
+      Tags:
+        - Key: cost:department
+          Value: support
+
+Outputs:
+  StackSetFunctionArn:
+    Description: "Resource ARN for the StackSetCustom resource Lambda function"
+    Value:
+      Fn::GetAtt:
+        - "StackSetResourceFunction"
+        - "Arn"
+    Export:
+        Name: "StackSetCustomResource"

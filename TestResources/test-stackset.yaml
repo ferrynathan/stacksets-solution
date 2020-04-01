@@ -1,0 +1,42 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: "test"
+
+Resources:
+  StackSet:
+    Type: Custom::StackSet
+    Properties:
+      ServiceToken:
+        Fn::ImportValue: StackSetCustomResource
+      StackSetName: EventDynamoDB
+      StackSetDescription: Deploy DynamoDB for event tables in dev and production
+      TemplateURL: https://test-templates-nathan.s3-eu-west-1.amazonaws.com/events.yaml
+      Parameters:
+        - ReadCapacity: 20
+        - WriteCapacity: 20
+      Capabilities: [ "CAPABILITY_IAM" ]
+      AdministrationRoleARN: 'arn:aws:iam::335179325365:role/aws-service-role/stacksets.cloudformation.amazonaws.com/AWSServiceRoleForCloudFormationStackSetsOrgAdmin'
+      ExecutionRoleName: 'AWSServiceRoleForCloudFormationStackSetsOrgMember'
+      OperationPreferences: {
+        "RegionOrder": [ "eu-west-1" ],
+        "FailureToleranceCount": 0,
+        "MaxConcurrentCount": 1
+      }
+      Tags:
+        - Environment: Testing
+        - Creator: Nathan
+      StackInstances:
+        # Dev
+        - Regions:
+            - eu-west-1
+          Accounts:
+            - 151692830144
+        # Production
+        - Regions:
+            - eu-west-1
+          Accounts:
+            - 652177216007
+          ParameterOverrides:
+            - ReadCapacity: 50
+            - WriteCapacity: 50

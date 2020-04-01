@@ -1,0 +1,140 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create CloudHealth resources in the master account
+
+Parameters:
+  S3Bucket:
+    Type: String
+    Description: S3Bucket where the templates are stored
+  Release:
+    Type: String
+    Description: Release name
+
+Resources:
+  StackSet:
+    Type: Custom::StackSet
+    Properties:
+      ServiceToken:
+        Fn::ImportValue: StackSetCustomResource
+      loglevel: "debug"
+      StackSetName: Gekko-CloudHealthRole
+      StackSetDescription: Deploys the CloudHealth role
+      AdministrationRoleARN: !Sub "arn:aws:iam::${AWS::AccountId}:role/AWSCloudFormationStackSetAdministrationRole"
+      ExecutionRoleName: AWSCloudFormationStackSetExecutionRole
+      TemplateURL: !Sub "https://s3.eu-west-1.amazonaws.com/${S3Bucket}/stacksets/${Release}/cloudhealth-role.yaml"
+      Capabilities: [ CAPABILITY_NAMED_IAM ]
+      OperationPreferences: {
+        "RegionOrder": !Ref "AWS::NoValue",
+        "FailureToleranceCount": 20,
+        "MaxConcurrentCount": 20
+      }
+      Tags:
+        - cost:department: finops
+      StackInstances:
+        - Regions:
+            - eu-west-1
+          Accounts:
+            - "102144311115"
+          ParameterOverrides:
+            - RoleType: master
+            - CostUsageReportS3: gekko-cloudhealth
+        - Regions:
+            - eu-west-1
+          Accounts:
+            - "435606335423"
+            - "493181015125"
+            - "258024586042"
+            - "786112486825"
+            - "529204313819"
+            - "697796191109"
+            - "855660213080"
+            - "271525160493"
+            - "489155402474"
+            - "817235077064"
+            - "591457218380"
+            - "004670368112"
+            - "386814256082"
+            - "307552767529"
+            - "272870123939"
+            - "025255149328"
+            - "605715327241"
+            - "520187500452"
+            - "732759112934"
+            - "819572348986"
+            - "523114425353"
+            - "144032874045"
+            - "022948201860"
+            - "521986205623"
+            - "260375132609"
+            - "811757272417"
+            - "869871376536"
+            - "314370067715"
+            - "292607205646"
+            - "321692049401"
+            - "847315287568"
+            - "704580758163"
+            - "271460372016"
+            - "543055564181"
+            - "734098088110"
+            - "491894046213"
+            - "808451463784"
+            - "124624360544"
+            - "010895084280"
+            - "530115263447"
+            - "157802142022"
+            - "095787810495"
+            - "971993983096"
+            - "259303640277"
+            - "868142677070"
+            - "150368788408"
+            - "185764117608"
+            - "065332230902"
+            - "704309291403"
+            - "517433461038"
+            - "086905400046"
+            - "928611224913"
+            - "808813628408"
+            - "861688840524"
+            - "082573903702"
+            - "789226319977"
+            - "771830558362"
+            - "228662280013"
+            - "107703916702"
+            - "525464332295"
+          ParameterOverrides:
+            - RoleType: sandbox
+        - Regions:
+            - eu-west-1
+          Accounts:
+            - "743210576884"
+            - "972175080704"
+            - "334392504280"
+            - "917942696829"
+            - "437267088335"
+            - "007115101023"
+            - "316296298170"
+            - "542849319416"
+            - "271417338750"
+            - "232642800926"
+            - "179337066134"
+            - "062933159420"
+            - "857744976042"
+          ParameterOverrides:
+            - RoleType: standard
+        - Regions:
+            - eu-west-1
+          Accounts:
+            - "786562732898"
+            - "884095340778"
+            - "734645428463"
+            - "049751816649"
+            - "558536553577"
+            - "514429069196"
+            - "229086318392"
+            - "931828585847"
+            - "565823707950"
+            - "694269980617"
+            - "495802808842"
+            - "424708846629"
+            - "207033723683"
+          ParameterOverrides:
+            - RoleType: prod
